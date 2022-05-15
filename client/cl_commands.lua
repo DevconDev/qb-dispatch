@@ -102,6 +102,48 @@ RegisterCommand('911', function(source, args, rawCommand)
         QBCore.Functions.Notify('Please put a reason after the 911', "success")
     end
 end)
+RegisterCommand('911e', function(source, args, rawCommand)
+    local msg = rawCommand:sub(5)
+    if string.len(msg) > 0 then
+        if not exports['qb-policejob']:IsHandcuffed() then
+            if HasPhone() then
+                PhoneCallAnim()
+                Wait(math.random(3,8) * 1000)
+                playAnim = false
+                local plyData = QBCore.Functions.GetPlayerData()
+                local currentPos = GetEntityCoords(PlayerPedId())
+                local locationInfo = getStreetandZone(currentPos)
+                local gender = GetPedGender()
+                PlaySound(-1, "Lose_1st", "GTAO_FM_Events_Soundset", 0, 0, 1)
+                TriggerServerEvent("dispatch:server:notify",{
+                    dispatchcodename = "911ecall", -- has to match the codes in sv_dispatchcodes.lua so that it generates the right blip
+                    dispatchCode = "911e",
+                    firstStreet = locationInfo,
+                    priority = 2, -- priority
+                    name = plyData.charinfo.firstname:sub(1,1):upper()..plyData.charinfo.firstname:sub(2).. " ".. plyData.charinfo.lastname:sub(1,1):upper()..plyData.charinfo.lastname:sub(2),
+                    number = plyData.charinfo.phone,
+                    origin = {
+                        x = currentPos.x,
+                        y = currentPos.y,
+                        z = currentPos.z
+                    },
+                    dispatchMessage = "Incoming Call", -- message
+                    information = msg,
+                    job = {"ambulance"} -- jobs that will get the alerts
+                })
+                Wait(1000)
+                DeletePhone()
+                StopEntityAnim(PlayerPedId(), 'cellphone_text_to_call', "cellphone@", 3)
+            else
+                QBCore.Functions.Notify("You can't call without a Phone!", "error", 4500)
+            end
+        else
+            QBCore.Functions.Notify("You can't call 911 while handcuffed!", "error", 4500)
+        end
+    else
+        QBCore.Functions.Notify('Please put a reason after the 911', "success")
+    end
+end)
 
 RegisterCommand('911a', function(source, args, rawCommand)
     local msg = rawCommand:sub(5)
