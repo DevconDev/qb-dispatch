@@ -4,6 +4,11 @@ isLoggedIn = true
 QBCore = exports['qb-core']:GetCoreObject()
 local blips = {}
 
+-- Debugging and testing dispatch alerts - Uncomment to use. 
+--RegisterCommand('testdispatch',function ()
+--    TriggerEvent('')
+--end)
+
 -- core related
 
 AddEventHandler('onResourceStart', function(resourceName)
@@ -248,7 +253,7 @@ RegisterNetEvent("ps-dispatch:client:AddCallBlip", function(coords, data, blipId
 			if data.blipColour then colour = data.blipColour end
 			if data.blipScale then scale = data.blipScale end
 			if data.radius then radius = data.radius end
-			print(data.blipSprite, data.blipColour, data.blipScale, data.radius)
+			
 			if data.offset == "true" then
 				if randomoffset <= 25 then
 					radius = AddBlipForRadius(coords.x + math.random(Config.MinOffset, Config.MaxOffset), coords.y + math.random(Config.MinOffset, Config.MaxOffset), coords.z, data.radius)
